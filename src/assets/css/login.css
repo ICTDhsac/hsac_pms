@@ -3,3 +3,10 @@ input::placeholder {
     font-style: italic; /* Placeholder text style */
     font-size: 14px; /* Placeholder text size */
 }
+
+.login_bg {
+    background-image: url('../images/login_bg3.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}

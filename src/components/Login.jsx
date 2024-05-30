@@ -3,11 +3,16 @@ import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col, Alert, InputGroup } from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import SweetAlertComponent from './SweetAlertComponent';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/css/login.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [userData, setUserData] = useState({
+        email: email,
+        password: password
+    });
     const [error, setError] = useState('');
     const [showAlert, setShowAlert] = useState(false);
 
