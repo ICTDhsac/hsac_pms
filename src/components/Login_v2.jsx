@@ -1,82 +1,99 @@
 
 // src/components/Login.jsx
 import React, { useEffect, useState } from 'react';
-import { confirmAlert } from 'react-confirm-alert';
-import SweetAlertComponent from './SweetAlertComponent';
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import alert styles if needed
+import { ToastContainer, toast } from 'react-toastify';
+
+/* Component */
+/* import SweetAlertComponent from './SweetAlertComponent';
+    const [showAlert, setShowAlert] = useState(false);
+
+    <SweetAlertComponent
+        show={showAlert}
+        title="Are you sure?"
+        text="You won't be able to revert this!"
+        icon="warning"
+        showCancelButton={true}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+/> */
+
+/* import Modal from './Modal';
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} modalTitle="Modal Title" />
+ */
+
+/* sweetalert */
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const MySwal = withReactContent(Swal);
+
+/* css */
 import '../assets/css/tailwind.css';
 import '../assets/css/login.css';
+import 'react-toastify/dist/ReactToastify.css';
+/* imanges */
 import hsac_logo from '../assets/images/hsac_logo.png';
 
 const Login_v2 = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('user@example.com');
+    const [password, setPassword] = useState('password');
     const [isLoading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const [isAuth, setAuth] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
+    const [isValidToken, setValidToken] = useState(null);
+
+    const notify = (msg) => toast((msg));
 
     const handleLogin = (e) => {
         e.preventDefault();
 
         setLoading(() => true);
-        setError('');
 
         setTimeout(() => {
             if (email === 'user@example.com' && password === 'password') {
-                alert('Login successful!');
+
                 setAuth(() => true);
-                setError('');
+                notify(<div><i className="fa fa-thumbs-up"></i>  Login approved</div>);
+                setTimeout(() => {
+                    notify(<div><i class="fa-solid fa-circle-info"></i>  Kindly open your authenticator app and enter the required token to proceed.</div>);
+                }, 500);
+                
+
             } else {
-                setError('Invalid email or password');
+
+                MySwal.fire({
+                    show: true,
+                    title: "Login",
+                    text: "Invalid Username and Password",
+                    icon: "warning",
+                    confirmButtonText: 'OK'
+                })
+
             }
             setLoading(false);
         }, 500);
 
     };
 
-    const handleClick = () => {
-        confirmAlert({
-            title: 'Confirm to submit',
-            message: 'Are you sure to do this.',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: () => alert('Click Yes')
-                },
-                {
-                    label: 'No',
-                    onClick: () => alert('Click No')
-                }
-            ]
-        });
-    };
-
-    const handleShowAlert = () => {
-        setShowAlert(true);
-    };
-
-    const handleConfirm = () => {
-        setShowAlert(false);
-        // alert('Confirmed!');
-    };
-
-    const handleCancel = () => {
-        setShowAlert(false);
-        // alert('Cancelled!');
-    };
-
     return (
         <div className="login_bg flex items-center justify-center min-h-screen">
-            <div className="shadow-2xl rounded-lg p-8 max-w-lg w-full bg-white ring-1">
-                <img className='m-auto opacity-90' src={hsac_logo} alt="HSAC Logo" width={80} />
-                <h1 className='text-center text-xl text-gray-600 font-medium'>Human Settlements Adjudication Commission</h1>
-                <h2 className='text-center text-sm italic text-gray-500'>(formerly Housing and Land Use Regulatory Board)</h2>
+
+            <ToastContainer />
+
+            <div className="shadow-2xl rounded-lg p-8 min-h-[70vh] max-w-lg w-full bg-white ring-1">
+                <div className="md:flex items-stretch">
+                    <div>
+                        <img className='m-auto opacity-90' src={hsac_logo} alt="HSAC Logo" width={80} />
+                    </div>
+                    <div className='w-full flex flex-col justify-center'>
+                        <h1 className='text-center text-basis text-gray-600 font-medium'>Human Settlements Adjudication Commission</h1>
+                        <h2 className='text-center text-sm italic text-gray-500'>(formerly Housing and Land Use Regulatory Board)</h2>
+                        
+                    </div>
+                </div>
                 <hr className='m-3'/>
                 <h3 className="text-center text-gray-600 text-lg font-medium mb-6">
                     {!isAuth ? "User Login" : "User Authentication"}
                 </h3>
-                {error && <div className="bg-red-100 text-red-700 p-4 rounded mb-4">{error}</div>}
 
                 {!isAuth &&
                 (<form onSubmit={handleLogin}>
@@ -127,7 +144,7 @@ const Login_v2 = () => {
                         </div>
 
                     </div>
-                    <div className="flex justify-end mt-6">
+                    <div className="flex justify-end mt-8">
                         <button type="submit" className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:tra">
                             <i className="fa-solid fa-right-to-bracket mr-2"></i> Login &nbsp; {isLoading && <div><i className="fa fa-spinner fa-spin-pulse"></i></div> }
                         </button>
@@ -135,13 +152,32 @@ const Login_v2 = () => {
                 
                 </form>)}
                 {isAuth && (
-                    <form className='p-3 border shadow-md'>
-                        <input
-                            type="password"
-                            id="user_token"
-                            placeholder="Enter Your Token"
-                            className="block text-center w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm hover:bg-sky-100 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
+                    <form className='p-3 border shadow-md flex' onSubmit={(e) => e.preventDefault()}>
+                        <div className='flex flex-col justify-center text-center'>
+                            <div>
+                                <label className='text-center w-full inline-block mb-3' htmlFor="user_token"> <i class="fa-solid fa-key"></i> Enter your token</label>
+                                <input
+                                    type="password"
+                                    id="user_token"
+                                    placeholder="6-digit PIN"
+                                    className={`block text-center w-30 px-4 py-2 border border-gray-300 rounded-md ring shadow-sm hover:bg-sky-100 focus:border-indigo-500 focus:ring-offset-4 ${isValidToken ? 'focus:border-green-500' : 'focus:border-red-500'}`}
+                                />
+                                <button
+                                    type='submit'
+                                    className="inline-flex items-center px-4 py-1 mt-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:tra"
+                                >
+                                    <i className="fa fa-submit"></i> &nbsp;Submit
+                                </button>
+                            </div>
+                        </div>
+                        <figure className='w-auto'>
+                            <img
+                                src="data:image/png;base64,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"
+                                alt="Authenticator app QR code"
+                                className='m-auto'
+                            />
+                            <figcaption className='p-1 italic text-sm'>Open your authenticator app and scan the qr code.</figcaption>
+                        </figure>
                     </form>
                 )}
             </div>

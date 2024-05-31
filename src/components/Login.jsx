@@ -1,7 +1,6 @@
 // src/components/Login.jsx
 import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col, Alert, InputGroup } from 'react-bootstrap';
-import { confirmAlert } from 'react-confirm-alert';
 import SweetAlertComponent from './SweetAlertComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/css/login.css';
@@ -24,23 +23,6 @@ const Login = () => {
         } else {
             setError('Invalid email or password');
         }
-    };
-
-    const handleClick = () => {
-        confirmAlert({
-            title: 'Confirm to submit',
-            message: 'Are you sure to do this.',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: () => alert('Click Yes')
-                },
-                {
-                    label: 'No',
-                    onClick: () => alert('Click No')
-                }
-            ]
-        });
     };
 
     const handleShowAlert = () => {
@@ -100,20 +82,7 @@ const Login = () => {
                     </Form>
                 </Col>
             </Row>
-            
-            {/* <div className="text-center">
-                <Button className="m-5" onClick={handleClick} variant="primary" type="submit"> Confirm Alert Module </Button>
-                <Button onClick={handleShowAlert} variant="warning">Show SweetAlert</Button>
-            </div>
-            <SweetAlertComponent
-                show={showAlert}
-                title="Are you sure?"
-                text="You won't be able to revert this!"
-                icon="warning"
-                showCancelButton={true}
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-            /> */}
+        
             
         </Container>
     );

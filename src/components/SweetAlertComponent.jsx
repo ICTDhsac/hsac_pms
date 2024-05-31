@@ -16,9 +16,9 @@ export default function SweetAlertComponent( { show, title, text, icon, showCanc
             cancelButtonText: 'Cancel',
         }).then((result) => {
             if (result.isConfirmed) {
-                onConfirm();
+                if (onConfirm) onConfirm();
             } else if (result.dismiss === Swal.DismissReason.cancel) {
-                onCancel();
+                if (onCancel) onCancel();
             }
         });
     }
